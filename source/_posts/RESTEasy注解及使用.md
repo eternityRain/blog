@@ -1,9 +1,12 @@
 ---
 title: RESTEasy注解及使用
 date: 2016-09-27 14:36:21
-tags:
+tags: [rest]
+categories: JAX-RS
 ---
 
+## RESTEasy简介
+接上一篇[《JAX-RS规范的版本.实现.jar对应关系》](https://eternityrain.github.io/2016/09/27/JAX-RS%E8%A7%84%E8%8C%83%E7%9A%84%E7%89%88%E6%9C%AC.%E5%AE%9E%E7%8E%B0.jar%E5%AF%B9%E5%BA%94%E5%85%B3%E7%B3%BB/)，我们知道RESTEasy是JAX-RS
 
 ### version:3.0.7.Final
 
@@ -36,8 +39,9 @@ tags:
 #### @ApplicationPath
 
 ```
+
         @ApplicationPath("operations")
-    public class OperationApplication extends Application {
+        public class OperationApplication extends Application {
 
         private Set<Object> singletons=new HashSet<Object>();
 
@@ -58,7 +62,8 @@ tags:
 #### @Path,@GET,@PUT,@DELETE,@POST
 
 ```
-@Path("/library")
+
+	@Path("/library")
     public class Library {
 
         @GET
@@ -74,25 +79,28 @@ tags:
 
 #### @PathParam,@QueryParam
 
-```
-@PUT
-@Path("/book/{isbn}")
-public void addBook(@PathParam("isbn") String isbn, @QueryParam("name") String name){
+···
 
-    System.out.println("add the book with name : "+name+", isbn : "+isbn);
-}
+	@PUT
+	@Path("/book/{isbn}")
+	public void addBook(@PathParam("isbn") String isbn, @QueryParam("name") String name){
+	
+	    System.out.println("add the book with name : "+name+", isbn : "+isbn);
+	}
+	
+	@DELETE
+	@Path("/book/{var: .*}/{isbn}")
+	public void removeBook(@PathParam("isbn") String isbn,@PathParam("var") String var){
+	        System.out.println(var);
+	        System.out.println("the book with isbn : "+isbn+" has been removed");
+	    }
 
-@DELETE
-@Path("/book/{var: .*}/{isbn}")
-public void removeBook(@PathParam("isbn") String isbn,@PathParam("var") String var){
-        System.out.println(var);
-        System.out.println("the book with isbn : "+isbn+" has been removed");
-    }
-```
+···
 
 通过声明pathparam参数名可以更方便的获取路径参数
 
 ```
+
     @POST
     @Path("/book{multi}")
     public void postBook(@PathParam("multi") PathSegment multi){
@@ -108,7 +116,9 @@ public void removeBook(@PathParam("isbn") String isbn,@PathParam("var") String v
 上一片段对应的请求为：
 
 ```
-POST http://localhost:8080/operations/library/book==;name=EJB 3.0;title=Bill Burke
+
+	POST http://localhost:8080/operations/library/book==;name=EJB 3.0;title=Bill Burke
+
 ```
 
 通过PathSegment类的使用可以将路径参数进行map映射
@@ -116,6 +126,7 @@ POST http://localhost:8080/operations/library/book==;name=EJB 3.0;title=Bill Bur
 #### @MatrixParam
 
 ```
+
     @PUT
     @Path("/books")
     public void updateBook(@MatrixParam("name") String name,@MatrixParam("title") String title){
@@ -126,17 +137,21 @@ POST http://localhost:8080/operations/library/book==;name=EJB 3.0;title=Bill Bur
 使用@MatrixParam可以获取下面这种资源的请求参数：
 
 ```
-GET http://host.com/library/book;name=EJB 3.0;author=Bill Burke
+
+	GET http://host.com/library/book;name=EJB 3.0;author=Bill Burke
+
 ```
 
 #### @FormParam,@DefaultValue
 
 ```
+
     @POST
     @Path("/books-form1")
     public void addBookByForm(@FormParam("name") @DefaultValue("yimmm") String name,@FormParam("title") String title){
         System.out.println("name :"+name+" ,title :"+title);
     }
+
 ```
 
 作为form提交的参数@FormParam可以根据名称进行获取
@@ -144,6 +159,7 @@ GET http://host.com/library/book;name=EJB 3.0;author=Bill Burke
 #### @Consumes
 
 ```
+
     @POST
     @Path("/books-form2")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
@@ -161,6 +177,7 @@ GET http://host.com/library/book;name=EJB 3.0;author=Bill Burke
 #### @Form
 
 ```
+
     @POST
     @Path("/books-form3")
     @Consumes(MediaType.APPLICATION_FORM_URLENCODED)
@@ -173,7 +190,8 @@ GET http://host.com/library/book;name=EJB 3.0;author=Bill Burke
 使用@Form可以将form参数直接映射为对象 但是该对象需要进行相关标注
 
 ```
-public class Book {
+
+	public class Book {
     @FormParam("author")
     private String author;
 
@@ -184,6 +202,7 @@ public class Book {
 #### @Context,@Encoded
 
 ```
+
     @GET
     @Path("encodeTest/{name}")
     public String testEncode(@Context javax.ws.rs.core.HttpHeaders headers,@PathParam("name") @Encoded String name){
@@ -197,6 +216,7 @@ public class Book {
 #### @Produces
 
 ```
+
     @GET
     @Path("/books")
     @Produces({MediaType.APPLICATION_JSON,MediaType.TEXT_PLAIN})
