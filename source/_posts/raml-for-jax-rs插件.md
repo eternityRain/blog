@@ -106,15 +106,18 @@ Maven 组件仓库地址
     </executions>
 	</plugin>
 
-##### 配置中的Schema
-| Schema      |     Default Value |   Optional   |
-| :-------- | -------- | ------ |
-| sourceDirectory    |   field2 |  yes  |
-| basePackageName    |   field2 |  yes  |
-| jaxrsVersion    |   field2 |  yes  |
-| useJsr303Annotations    |   field2 |  yes  |
-| jsonMapper    |   field2 |  yes  |
+##### 配置说明
+
+| Schema               |     Mean          |   Optional              |
+| :--------            | --------          | ------                  |
+| sourceDirectory      |   raml文件目录     |  custom                 |
+| sourcePaths          |   raml文件路径集合  | custom                  |
+| outputDirectory      |   输出目录         | custom                  |
+| basePackageName      |   生成的基础包路径  |  custom                 |
+| jaxrsVersion         |   JAX-RS规范版本   |1.1 or 2.0               |
+| useJsr303Annotations | 是否使用JSR303规范  |  boolean                |
+| jsonMapper           | json与java映射规范 | jackson1 jackson2 gson none  |
 | extensions    |   field2 |  yes  |
-| customAnnotator    |   field2 |  yes  |
+| customAnnotator      |   json schema到pojo的定制化注解器 |  custom  |
 
 当你运行`mvn raml:generate`时，RAML定义的内容就会被处理生成相应的Java代码，同样在运行`mvn compile` 或者 `mvn package`命令时这个插件也会执行。
