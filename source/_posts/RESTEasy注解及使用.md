@@ -6,9 +6,14 @@ categories: JAX-RS
 ---
 
 ## RESTEasy简介
-接上一篇[《JAX-RS规范的版本.实现.jar对应关系》](https://eternityrain.github.io/2016/09/27/JAX-RS%E8%A7%84%E8%8C%83%E7%9A%84%E7%89%88%E6%9C%AC.%E5%AE%9E%E7%8E%B0.jar%E5%AF%B9%E5%BA%94%E5%85%B3%E7%B3%BB/)，我们知道RESTEasy是JAX-RS
+接上一篇[《JAX-RS规范的版本.实现.jar对应关系》](https://eternityrain.github.io/2016/09/27/JAX-RS%E8%A7%84%E8%8C%83%E7%9A%84%E7%89%88%E6%9C%AC.%E5%AE%9E%E7%8E%B0.jar%E5%AF%B9%E5%BA%94%E5%85%B3%E7%B3%BB/)，我们已经知道RESTEasy是JAX-RS规范的实现，本篇内容告诉我们该怎样去使用它。
 
-### version:3.0.7.Final
+## 常用注解
+
+RESTEasy以jaxrs-api.jar包为基础对JAX-RS进行实现，该包中包含了JAX-RS规范所声明的注解。  
+
+### 注解列表
+这里我们根据**3.0.7.Final**这一版本对一些常用注解进行说明，以下是注解列表，请进行参考阅读：
 
 | 注解             | 描述                                                                                                                                                                                                                                                                                     | 参数    |
 |------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------|
@@ -57,7 +62,11 @@ categories: JAX-RS
     }
 ```
 
-重写Application的getSingletons()方法，在构造器中加载Library和BookStoreImpl两份资源，只有在此添加的资源才能被访问
+在使用RESTEasy进行应用启动的时候，需要指明其请求根路径，这里既需要用到`@ApplicationPath`注解。  
+新建一个资源处理类OperationApplication继承Application，  
+标注类级别注解`@ApplicationPath`，用以声明根路径，  
+重写getSingletons()方法，用以获取资源容器  
+在构造器中加载Library和BookStoreImpl两份资源，只有在此添加的资源才能被访问
 
 #### @Path,@GET,@PUT,@DELETE,@POST
 
@@ -75,7 +84,11 @@ categories: JAX-RS
      }
 ```
 
-@Path是类与方法级别 @GET,@PUT,@DELETE,@POST为方法级别
+@Path是类与方法级别   
+使用`@Path`注解标识访问路径，该路径基于`@ApplicationPath`提供的根路径  
+
+@GET,@PUT,@DELETE,@POST为方法级别  
+这四个注解是http rest注解，用在实际动作上
 
 #### @PathParam,@QueryParam
 
@@ -97,7 +110,8 @@ categories: JAX-RS
 
 ···
 
-通过声明pathparam参数名可以更方便的获取路径参数
+通过声明`@Pathparam`参数名可以更方便的获取路径上的参数，  
+路径参数可以直接声明，也可以声明后通过正则进行约束，如`@Path("/book/{var: .*}/{isbn}")`，这里声明了var和isbn两个路径参数，var参数会捕获输入路径中满足冒号后正则的部分作为value
 
 ```
 
@@ -121,7 +135,7 @@ categories: JAX-RS
 
 ```
 
-通过PathSegment类的使用可以将路径参数进行map映射
+通过PathSegment类的使用可以将路径参数进行map映射，按照上面的请求写法，会将参数name和title进行键值映射
 
 #### @MatrixParam
 
@@ -134,7 +148,7 @@ categories: JAX-RS
     }
 ```
 
-使用@MatrixParam可以获取下面这种资源的请求参数：
+使用@MatrixParam可以获取下面这种资源写法的请求参数：
 
 ```
 
@@ -154,7 +168,7 @@ categories: JAX-RS
 
 ```
 
-作为form提交的参数@FormParam可以根据名称进行获取
+作为form提交的参数`@FormParam`可以根据名称进行获取，`@DefaultValue`在未传入相应参数时可以赋予其默认值
 
 #### @Consumes
 
@@ -172,7 +186,8 @@ categories: JAX-RS
     }
 ```
 
-使用@Consumes进行请求类型的匹配，在进行form提交时，MultivaluedMap<String,String>可以一次性接收form的所有参数
+`@Consumes`对请求参数格式进行约束  
+在进行form提交时，MultivaluedMap<String,String>可以一次性接收form的所有参数
 
 #### @Form
 
@@ -187,7 +202,8 @@ categories: JAX-RS
     }
 ```
 
-使用@Form可以将form参数直接映射为对象 但是该对象需要进行相关标注
+使用`@Form`可以将form参数直接映射为对象 但是该对象需要进行相关标注。  
+新建Book.java，用`@FormParam对其进行参数标注`，在资源中即可运用`@Form`在参数列表中对`Book book`进行标注，请求中的符合Book属性的参数会作为Book实例的属性被接收
 
 ```
 
@@ -211,7 +227,8 @@ categories: JAX-RS
     }
 ```
 
-@Context将javax.ws.rs.core.HttpHeaders进行嵌入，@Encoded对当前的pathparam name进行urlencode
+@Context在参数列表注入系统级别参数，如上，将javax.ws.rs.core.HttpHeaders进行嵌入。  
+@Encoded对当前的pathparam name进行urlencode，接收后的name参数是encode后的字符串
 
 #### @Produces
 
@@ -225,7 +242,7 @@ categories: JAX-RS
     }
 ```
 
-@Produces与@Consumes用法相同，只不过是进行返回类型的匹配，它们的参数为字符串数组
+@Produces与@Consumes用法相同，只不过是进行返回数据格式的匹配，它们的参数为字符串数组
 
 ---
 

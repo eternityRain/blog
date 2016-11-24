@@ -1,8 +1,13 @@
 ---
-title: Jsonschema2pojo
+title: Json schema规范写法
 date: 2016-09-27 15:00:47
 tags:
 ---
+
+## 简介
+
+日常开发中，json数据格式经常会被用到，其简单易懂的写法（对人与计算机皆如此）以及其轻量级特性非常适用于网络间的数据传递。json数据格式与java对象会经常进行相互转换，本文探讨的是json to java的转换。  
+Jsonschema2pojo即是一种json转换java的工具
 
 ### 主流JSON库
 
@@ -15,9 +20,12 @@ tags:
 
 ### Jsonschema2pojo
 
-将JsonSchema翻译为pojo的工具 其底层使用的json2java工具即为Jackson 2.x Jsonschema2pojo定义了json schema的规范和书写方式
+其底层使用的json2java工具即为Jackson 2.x，Jsonschema2pojo基于Jackson 2.x提供的java注解与规范对json数据进行解析，相应的，json数据也就需要有它本身一定的写法规范，Jsonschema2pojo定义了json schema的规范和书写方式
 
-### Json Schema feature support
+## Json Schema feature support
+这里，我就**常用的以及一些扩展的**书写规范向大家一一说明，也提供了一些例子供参考。  
+
+下表为**json schema书写过程中固定的一些rule**，请先简单阅读：
 
 | JSON Schema rule                   | Supported | Since | Note                                                                        |
 |------------------------------------|-----------|-------|-----------------------------------------------------------------------------|
@@ -49,9 +57,9 @@ tags:
 | $ref                               | Yes       | 0.1.6 | Supports absolute, relative, slash & dot delimited fragment paths, self-ref |
 | $schema                            | No        |       |                                                                             |
 
--	properties
+###	properties
 
- schema:
+#### schema
 
 ```
       {
@@ -64,7 +72,7 @@ tags:
         }
 ```
 
- java:
+#### java
 
 ```
     public class MyObject {
@@ -78,27 +86,27 @@ tags:
         }
 ```
 
- properties中指定了schema对象的参数
+ properties用于指定schema的参数，转换为pojo后，properties中的属性foo会转换为java对象的属性foo，"type"用来指定对象或属性的类型
 
--	type
+###	type
 
- 指定所定义的有类型概念的数据类型
+ 指定所定义的有类型概念的数据类型，下表为json schema中type声明类型与pojo中声明类型间的对应关系：
 
-| Schema                          | typeJava            | type |
-|---------------------------------|---------------------|------|
-| string                          | java.lang.String    |      |
-| number                          | java.lang.Double    |      |
-| integer                         | java.lang.Integer   |      |
-| boolean                         | java.lang.Boolean   |      |
-| object                          | generated Java type |      |
-| array                           | java.util.List      |      |
-| array (with "uniqueItems":true) | java.util.Set       |      |
-| null                            | java.lang.Object\`  |      |
-| any                             | java.lang.Object    |      |
+| Schema Type                     | Java Type           |
+|---------------------------------|---------------------|
+| string                          | java.lang.String    |
+| number                          | java.lang.Double    |
+| integer                         | java.lang.Integer   |
+| boolean                         | java.lang.Boolean   |
+| object                          | generated Java type |
+| array                           | java.util.List      |
+| array (with "uniqueItems":true) | java.util.Set       |
+| null                            | java.lang.Object    |
+| any                             | java.lang.Object    |
 
--	additionalProperties
+###	additionalProperties
 
- schema
+#### schema1
 
 ```
        {
@@ -107,7 +115,7 @@ tags:
         }
 ```
 
- java
+#### java1
 
 ```
 
@@ -128,7 +136,8 @@ tags:
     }
 ```
 
- additionalProperties为true，会生成Map作为传入参数中附加参数的接受器，false则不生成，写成“{}”等同于true。 你也可以通过指定additionalProperties的数据类型来约束生成的结果 schema：
+ additionalProperties为true，会生成Map作为传入参数中附加参数的接受器，false则不生成，写成“{}”等同于true。 你也可以通过指定additionalProperties的数据类型来约束生成的结果。 
+#### schema2
 
 ```
 {
@@ -139,7 +148,7 @@ tags:
     }
 ```
 
- java
+#### java2
 
 ```
 
@@ -160,7 +169,9 @@ tags:
     }
 ```
 
- 上面将additionalProperties的类型改为Double 如果将type指定为object（我的json文件名为source.json）
+ 上面将additionalProperties的类型改为Double，pojo中属性的泛型就会变为`<String, Double>` 如果将type指定为object（我的json文件名为source.json）
+
+#### schema3
 
 ```
 {
@@ -171,7 +182,7 @@ tags:
     }
 ```
 
- java
+#### java3
 
 ```
 
@@ -194,13 +205,15 @@ tags:
 
  如上，会生成一个以主文件名为前缀，Property为后缀的类（SourceProperty）作为additionalProperties的value类型，该类中则有：
 
+#### java4
+
 ```
 private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 ```
 
--	array
+###	array
 
- schema：
+#### schema
 
 ```
 {
@@ -216,11 +229,11 @@ private Map<String, Object> additionalProperties = new HashMap<String, Object>()
     }
 ```
 
- array写法如上即会生成Array《string》类型的参数myArrayProperty，如果在myArrayProperty指定“uniqueItems”:true，生成的集合则为Set<>. 对于items，可以$ref引用其他jsonschema文件，也可以直接在其下编写jsonschema，会生成一个以集合参数为名称（MyArrayProperty）的对象作为该集合的泛型
+ array写法如上即会生成`Array<string>`类型的参数myArrayProperty，如果在myArrayProperty指定“uniqueItems”:true，生成的集合则为Set<>. 对于items，可以$ref(后面介绍)引用其他jsonschema文件，也可以直接在其下编写jsonschema，会生成一个以集合参数为名称（MyArrayProperty）的对象作为该集合的泛型
 
--	enum
+###	enum
 
- schema:
+#### schema
 
 ```
  {
@@ -234,7 +247,7 @@ private Map<String, Object> additionalProperties = new HashMap<String, Object>()
     }
 ```
 
- java:
+#### java
 
 ```
 
@@ -270,7 +283,9 @@ private Map<String, Object> additionalProperties = new HashMap<String, Object>()
 
 ```
 
--	format
+enum作为枚举写法经常被使用，比较简单，不详细介绍
+
+###	format
 
  可以给属性指定format规则，它会影响你的参数类型，和type对比，format的优先级更高，format的规则列表如下：
 
@@ -292,7 +307,7 @@ private Map<String, Object> additionalProperties = new HashMap<String, Object>()
 | "uuid"                              | java.util.UUID          |
 | anything else (unrecognised format) | type is unchanged       |
 
--	extends
+###	extends
 
  extends属性声明在schema层表明继承
 
@@ -323,7 +338,7 @@ public class Rose extends Flower {
     }
 ```
 
--	$ref
+###	$ref
 
 #### Supported protocols
 
@@ -364,9 +379,9 @@ public class Rose extends Flower {
     }
 ```
 
- 这种是集合类型泛型为本schema类型，类似于tree结构 也可以直接定位到集合的items属性作为类型
+ 这种写法将shema类型作为集合类型泛型的引用，类似于tree结构 也可以直接定位到集合的items属性作为类型（#/properties/children/items）
 
--	javaType
+###	javaType
 
 	```
 	{
@@ -375,11 +390,11 @@ public class Rose extends Flower {
 	    }
 	```
 
- 如此生成会创建一个CustomTypeName类，并将属性类型指定为该类 如果不加"type" : "object"，则不会生成对应类，但是属性类型依然为该类名，报错而已 当然，你也可以直接指定已有的封装类
+ javaType允许指定属性类型或类名称为java类（已存在或不存在的），如此生成会创建一个CustomTypeName类，并将属性类型指定为该类 如果不加"type" : "object"，则不会生成对应类，但是属性类型依然为该类名，报错而已 当然，你也可以直接指定已有的封装类
 
--	javaEnumNames
+###	javaEnumNames
 
- schema:
+#### schema
 
 ```
     {
@@ -394,7 +409,7 @@ public class Rose extends Flower {
     }
 ```
 
- java:
+#### java
 
 ```
 public enum Foo {
@@ -404,9 +419,11 @@ public enum Foo {
 }
 ```
 
--	javaInterfaces
+javaEnumNames是对于enum的扩展，可以指定java中的enum列表具体名称
 
- schema:
+###	javaInterfaces
+
+#### schema
 
 ```
     {
@@ -415,7 +432,7 @@ public enum Foo {
     }
 ```
 
- java:
+#### java
 
 ```
 public class FooBar implements Serializable, Cloneable
@@ -424,9 +441,13 @@ public class FooBar implements Serializable, Cloneable
 }
 ```
 
--	javaName
+这个好理解，声明接口
+
+###	javaName
 
  该属性用于指定类或属性的生成名称
+
+#### schema
 
 ```
     {
@@ -440,7 +461,7 @@ public class FooBar implements Serializable, Cloneable
     }
 ```
 
- java:
+#### java
 
 ```
 
