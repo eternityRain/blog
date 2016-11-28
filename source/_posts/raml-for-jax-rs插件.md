@@ -127,6 +127,6 @@ Maven 组件仓库地址
 | mapToVoid            | true:如果resource定义的方法的response没有body，生成的java method返回值将会是void，不是wrapper response | boolean |
 |useTitlePropertyForSchemaNames |将title属性作为schema的名称(没试出来) | boolean |
 | asyncResourceTrait            | 【待定】 | |
-
+| ignoredParameters             | 定义忽略参数列表，忽略指定的resource query参数 | custom |
 
 运行`mvn raml:generate`时，RAML定义的内容就会被处理生成相应的Java代码，同样在运行`mvn compile` 或者 `mvn package`命令时这个插件也会执行。
