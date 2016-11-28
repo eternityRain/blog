@@ -109,15 +109,24 @@ Maven 组件仓库地址
 ##### 配置说明
 
 | Schema               |     Mean          |   Optional              |
-| :--------            | --------          | ------                  |
+| :--------            | --------------    | ------                  |
 | sourceDirectory      |   raml文件目录     |  custom                 |
 | sourcePaths          |   raml文件路径集合  | custom                  |
 | outputDirectory      |   输出目录         | custom                  |
 | basePackageName      |   生成的基础包路径  |  custom                 |
+| removeOldOutput      |   是否删除上一次的输出| boolean                |
 | jaxrsVersion         |   JAX-RS规范版本   |1.1 or 2.0               |
 | useJsr303Annotations | 是否使用JSR303规范        |  boolean                |
 | jsonMapper           | json与java映射规范        | jackson1 jackson2 gson none  |
 | extensions           |  扩展对Resource的生成控制  |  custom  |
 | customAnnotator      |   json schema到pojo的定制化注解器 |  custom  |
+| jsonMapperConfiguration | 对于json映射的配置 | "generateBuilders","includeHashcodeAndEquals","includeToString","useLongIntegers" |
+|       skip           | 跳过插件的执行 | boolean |
+|    modelPackageName  | 设置model对象所在的目录名称(basepackage+modelpackage,如果schema中已经指定了javapackage，则此配置不生效) | custom | 
+| generateClientProxy  | 是否生成客户端代理(只生成proxy，覆盖model和resource)  | boolean |
+| mapToVoid            | true:如果resource定义的方法的response没有body，生成的java method返回值将会是void，不是wrapper response | boolean |
+|useTitlePropertyForSchemaNames |将title属性作为schema的名称(没试出来) | boolean |
+| asyncResourceTrait            | 【待定】 | |
+
 
 运行`mvn raml:generate`时，RAML定义的内容就会被处理生成相应的Java代码，同样在运行`mvn compile` 或者 `mvn package`命令时这个插件也会执行。
