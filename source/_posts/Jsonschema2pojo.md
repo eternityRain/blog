@@ -1,7 +1,7 @@
 ---
-title: Json schema规范写法
+title: Jsonschema2pojo中json schema规范写法
 date: 2016-09-27 15:00:47
-tags:
+tags: json
 ---
 
 ## 简介
@@ -20,7 +20,7 @@ Jsonschema2pojo即是一种json转换java的工具
 
 ### Jsonschema2pojo
 
-其底层使用的json2java工具即为Jackson 2.x，Jsonschema2pojo基于Jackson 2.x提供的java注解与规范对json数据进行解析，相应的，json数据也就需要有它本身一定的写法规范，Jsonschema2pojo定义了json schema的规范和书写方式
+Jsonschema2pojo支持jackson1，jackson2，gson三种规范，基于这些规范对json数据进行解析，相应的，json数据也就需要有它本身一定的写法规范，Jsonschema2pojo定义了json schema的规范和书写方式
 
 ## Json Schema feature support
 这里，我就**常用的以及一些扩展的**书写规范向大家一一说明，也提供了一些例子供参考。  
