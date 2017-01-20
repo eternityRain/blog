@@ -123,7 +123,7 @@ Maven 组件仓库地址
 | jsonMapperConfiguration | 对于json映射的配置 | "generateBuilders","includeHashcodeAndEquals","includeToString","useLongIntegers" |
 |       skip           | 跳过插件的执行 | boolean |
 |    modelPackageName  | 设置model对象所在的目录名称(basepackage+modelpackage,如果schema中已经指定了javapackage，则此配置不生效) | custom | 
-| generateClientProxy  | 是否生成客户端代理(只生成proxy，覆盖model和resource)  | boolean |
+| generateClientProxy  | 是否生成客户端代理(不生成warpper和用在返回的schema)  | boolean |
 | mapToVoid            | true:如果resource定义的方法的response没有body，生成的java method返回值将会是void，不是wrapper response | boolean |
 |useTitlePropertyForSchemaNames |将title属性作为schema的名称(没试出来) | boolean |
 | asyncResourceTrait            | 【待定】 | |
