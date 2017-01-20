@@ -17,7 +17,10 @@ raml2html 4和更高的版本仅支持raml 1.0语法转换，对于raml 0.8语�
 
 ### 安装
 
-npm i -g raml2html
+`npm i -g raml2html`
+
+
+**NOTE:**如果是raml 0.8,执行 `npm i -g raml2md@3.0.0`
 
 ### 使用
 
@@ -29,15 +32,9 @@ raml2html example.raml > example.html
 
 [官方地址](https://github.com/raml2html/raml2md)
 
-### raml版本支持
-
-raml2html 4和更高的版本仅支持raml 1.0语法转换，对于raml 0.8语法，需要使用raml2html的3.x版本
-
 ### 安装
 
 `npm i -g raml2md`
-
-**NOTE:**如果是raml 0.8,执行 `npm i -g raml2md@3.0.0`
 
 ### 使用
 
