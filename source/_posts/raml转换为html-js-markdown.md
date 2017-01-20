@@ -20,7 +20,7 @@ raml2html 4和更高的版本仅支持raml 1.0语法转换，对于raml 0.8语�
 `npm i -g raml2html`
 
 
-**NOTE:**如果是raml 0.8,执行 `npm i -g raml2md@3.0.0`
+**NOTE:**如果是raml 0.8,执行 `npm i -g raml2html@3.0.0`
 
 ### 使用
 
