@@ -1,7 +1,7 @@
 ---
 title: Hexo介绍及常用安装使用
 date: 2016-11-27 21:59:22
-tags: hexo
+tags: hexo,github
 ---
 
 ## hexo简介
